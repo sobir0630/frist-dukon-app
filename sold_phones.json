@@ -1,0 +1,250 @@
+[
+    {
+        "nomi": "nm,",
+        "modeli": "852.",
+        "sana": "28/04/2025",
+        "narx": "nbm,"
+    },
+    {
+        "nomi": "infinix",
+        "modeli": "12345678",
+        "sana": "04/05/2025",
+        "narx": "50$",
+        "sotilgan_sana": "04/05/2025"
+    },
+    {
+        "nomi": "edfghj",
+        "modeli": "8520.",
+        "sana": "28/04/2025",
+        "narx": "300",
+        "sotilgan_sana": "04/05/2025"
+    },
+    {
+        "nomi": "samsung",
+        "modeli": "12345678",
+        "sana": "02/05/2025",
+        "narx": "300$",
+        "sotilgan_sana": "04/05/2025"
+    },
+    {
+        "nomi": "bnm,653210",
+        "modeli": "421",
+        "sana": "04/05/2025",
+        "narx": "86532",
+        "sotilgan_sana": "04/05/2025"
+    },
+    {
+        "nomi": "bnvhgjm",
+        "modeli": "gjh",
+        "sana": "04/05/2025",
+        "narx": "uhj",
+        "sotilgan_sana": "04/05/2025"
+    },
+    {
+        "nomi": "samsung",
+        "modeli": "456789",
+        "narx": "$5000.00",
+        "info": "www",
+        "sana": "04/05/2025",
+        "sotilgan_sana": "05/05/2025"
+    },
+    {
+        "nomi": "rgb",
+        "modeli": "130456",
+        "sana": "06/05/2025",
+        "narx": "500$",
+        "sotilgan_sana": "06/05/2025"
+    },
+    {
+        "nomi": "samsung j2",
+        "modeli": "123654",
+        "sana": "11/05/2025",
+        "narx": "100$",
+        "sotilgan_sana": "11/05/2025"
+    },
+    {
+        "nomi": "artel",
+        "modeli": "94678321",
+        "sana": "11/05/2025",
+        "narx": "30$",
+        "sotilgan_sana": "11/05/2025"
+    },
+    {
+        "nomi": "infinix",
+        "modeli": "856479",
+        "sana": "11/05/2025",
+        "narx": "$500.00",
+        "sotilgan_narx": "$500.00",
+        "asl_narx": "600$",
+        "sotilgan_sana": "11/05/2025",
+        "mijoz_ismi": "farrux",
+        "mijoz_telefon": "+998948200630"
+    },
+    {
+        "nomi": "Nokia",
+        "modeli": "7843659",
+        "sana": "11/05/2025",
+        "narx": "$300.00",
+        "sotilgan_narx": "$300.00",
+        "asl_narx": "600$",
+        "sotilgan_sana": "11/05/2025",
+        "mijoz_ismi": "sobir",
+        "mijoz_telefon": "948200630"
+    },
+    {
+        "nomi": "ajib b12",
+        "modeli": "89732664",
+        "sana": "11/05/2025",
+        "narx": "$250.00",
+        "sotilgan_narx": "$250.00",
+        "asl_narx": "300$",
+        "sotilgan_sana": "11/05/2025",
+        "mijoz_ismi": "sobir",
+        "mijoz_telefon": "+998948200630"
+    },
+    {
+        "nomi": "samsung j5",
+        "modeli": "65987654",
+        "sana": "11/05/2025",
+        "narx": "$600.00",
+        "sotilgan_narx": "$600.00",
+        "asl_narx": "300$",
+        "sotilgan_sana": "11/05/2025",
+        "mijoz_ismi": "sobir",
+        "mijoz_telefon": "+998948200630"
+    },
+    {
+        "nomi": "nokia",
+        "modeli": "456987",
+        "sana": "11/05/2025",
+        "narx": "250$",
+        "sotish_narxi": "$300.00",
+        "mijoz_ismi": "sobir",
+        "mijoz_telefon": "+998949200630",
+        "sotilgan_sana": "11/05/2025"
+    },
+    {
+        "nomi": "infinix zero x",
+        "modeli": "236598",
+        "sana": "11/05/2025",
+        "narx": "300$",
+        "sotish_narxi": "$400.00",
+        "mijoz_ismi": "sobir",
+        "mijoz_telefon": "+998948200630",
+        "sotilgan_sana": "11/05/2025"
+    },
+    {
+        "nomi": "samsung a50",
+        "modeli": "741023",
+        "sana": "11/05/2025",
+        "narx": "500$",
+        "asl_narx": "$500.00",
+        "sotish_narx": "$600.00",
+        "foyda": "$100.00",
+        "mijoz_ismi": "sobir",
+        "mijoz_telefon": "+998948200630",
+        "sotilgan_sana": "11/05/2025"
+    },
+    {
+        "nomi": "priestique",
+        "modeli": "258963",
+        "sana": "12/05/2025",
+        "narx": "210.00 $",
+        "mijoz": {
+            "name": "sobir",
+            "phone": "948200630"
+        },
+        "foyda": 10.0
+    },
+    {
+        "nomi": "samsung",
+        "modeli": "1245630",
+        "sana": "12/05/2025",
+        "narx": "105.00 $",
+        "mijoz": {
+            "name": "sobir",
+            "phone": "948200630"
+        },
+        "foyda": 5.0
+    },
+    {
+        "nomi": "3243",
+        "modeli": "12345678",
+        "sana": "fasdfasdf",
+        "narx": 300.0,
+        "mijoz": {
+            "name": "ali",
+            "phone": "3243"
+        },
+        "foyda": 0.0
+    },
+    {
+        "nomi": "+998938313075",
+        "modeli": "789654",
+        "sana": "fasdfasdf",
+        "narx": 500.0,
+        "mijoz": {
+            "name": "sobirga",
+            "phone": "+998938313075"
+        },
+        "foyda": 0.0
+    },
+    {
+        "nomi": "52.",
+        "modeli": "12456387",
+        "sana": "fasdfasdf",
+        "narx": 300.0,
+        "mijoz": {
+            "name": "bn",
+            "phone": "52."
+        },
+        "foyda": 0.0
+    },
+    {
+        "nomi": "+998948200630",
+        "modeli": "12345678",
+        "sana": "fasdfasdf",
+        "narx": 100.0,
+        "mijoz": {
+            "name": "sobir",
+            "phone": "+998948200630"
+        },
+        "foyda": 10.0
+    },
+    {
+        "nomi": "5555",
+        "modeli": "98546798",
+        "sana": "fasdfasdf",
+        "narx": 200.0,
+        "sell_price": 200.0,
+        "mijoz": {
+            "name": "dddd",
+            "phone": "5555"
+        },
+        "foyda": 0.0
+    },
+    {
+        "nomi": "+998945689878",
+        "modeli": "5449662",
+        "sana": "fasdfasdf",
+        "narx": 500.0,
+        "sell_price": 530.0,
+        "mijoz": {
+            "name": "Timur",
+            "phone": "+998945689878"
+        },
+        "foyda": 30.0
+    },
+    {
+        "nomi": "samsung",
+        "modeli": "12456987",
+        "sana": "31/05/2025",
+        "narx": "500$",
+        "asl_narx": "$500.00",
+        "sotish_narx": "$550.00",
+        "foyda": "$50.00",
+        "sotilgan_sana": "31/05/2025",
+        "mijoz_ismi": "sobir",
+        "mijoz_telefon": "+998948200630"
+    }
+]
