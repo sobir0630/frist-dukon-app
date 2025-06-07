@@ -1,0 +1,14 @@
+{
+    "system_codes": [
+        "SYS001",
+        "SYS002",
+        "SYS003"
+    ],
+    "user_codes": [
+        "USR001",
+        "USR002"
+    ],
+    "admin_codes": [
+        "ADM001"
+    ]
+}

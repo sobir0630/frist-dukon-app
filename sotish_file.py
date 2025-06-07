@@ -1,15 +1,60 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+import customtkinter as ctk
 import json
 import os
 from datetime import datetime
 import sys
 import subprocess
+from PIL import Image, ImageTk
 
 # Global o'zgaruvchilar
 root = None
 tree = None
 sold_phones = []
+language = "uz"
+
+# lug‘at
+translations = {
+    "uz": {
+        "title": "Sotilgan telefonlar tarixi",
+        "header": "📱 Sotilgan telefonlar tarixi",
+        "phone_name": "Telefon nomi",
+        "imei": "IMEI",
+        "original_price": "Asl narx",
+        "selling_price": "Sotish narx", 
+        "profit": "Foyda",
+        "date": "Sana",
+        "customer": "Mijoz",
+        "phone": "Telefon",
+        "close": "Yopish",
+        "enter_code": "Kodni kiriting:",
+        "wrong_code": "Noto'g'ri kod!",
+        "error": "Xatolik",
+        "confirm": "Tasdiqlash",
+        "enter": "Enter tugmasi bosib naxrni ko'ing:",
+        "search": "Qidirsh"
+    },
+    "ru": {
+        "title": "История продаж телефонов",
+        "header": "📱 История продаж телефонов",
+        "phone_name": "Название телефона",
+        "imei": "IMEI",
+        "original_price": "Исходная цена",
+        "selling_price": "Цена продажи",
+        "profit": "Прибыль",
+        "date": "Дата",
+        "customer": "Клиент",
+        "phone": "Телефон",
+        "close": "Закрыть",
+        "enter_code": "Введите код:",
+        "wrong_code": "Неверный код!",
+        "error": "Ошибка",
+        "confirm": "Подтверждение",
+        "enter": "Нажмите Enter, чтобы увидеть цену:",
+        "search": "Поиск"
+    }
+}
 
 # Ranglar
 colors = {
@@ -28,6 +73,53 @@ def main():
     root.title("Sotilgan telefonlar tarixi")
     root.state('zoomed')
     root.configure(bg=colors["bg"])
+
+
+
+
+
+
+        # Til tanlash tugmalari
+    def change_language(lang):
+        global language
+        language = lang
+        root.title(translations[language]["title"])
+        header.config(text=translations[language]["header"])
+        # Ustun sarlavhalarini yangilash
+        tree.heading("nomi", text=translations[language]["phone_name"])
+        tree.heading("modeli", text=translations[language]["imei"])
+        tree.heading("asl_narx", text=translations[language]["original_price"])
+        tree.heading("sotish_narx", text=translations[language]["selling_price"])
+        tree.heading("foyda", text=translations[language]["profit"])
+        tree.heading("sana", text=translations[language]["date"])
+        tree.heading("mijoz", text=translations[language]["customer"])
+        tree.heading("telefon", text=translations[language]["phone"])
+        close_btn.configure(text=translations[language]["close"])
+
+    
+    lang_frame = tk.Frame(root, bg=colors["bg"])
+    lang_frame.pack(anchor="ne", padx=20, pady=10)
+    
+    uz_btn = ctk.CTkButton(lang_frame, 
+                          text="UZ",
+                          command=lambda: change_language("uz"),
+                          fg_color="#3486eb",
+                          text_color="white",
+                          width=80,
+                          height=25,
+                          corner_radius=10)  # Burchaklar radiusi
+    uz_btn.pack(side=tk.LEFT, padx=5)
+    
+    ru_btn = ctk.CTkButton(lang_frame,
+                          text="RU",
+                          command=lambda: change_language("ru"),
+                          fg_color="#34eb40",
+                          text_color="white", 
+                          width=80,
+                          height=25,)
+    ru_btn.pack(side=tk.LEFT, padx=5)
+
+    
     
     # Sarlavha
     header = tk.Label(root, 
@@ -79,23 +171,101 @@ def main():
     # Ma'lumotlarni yuklash
     load_sales_data()
     
+    # Statistika frame dan oldin qo'shish kerak:
+
+    # Qidiruv frame
+    search_frame = tk.Frame(root, bg=colors["bg"])
+    search_frame.pack(fill="x", padx=20, pady=10)
+    
+    # IMEI qidiruv
+    tk.Label(search_frame, 
+             text="IMEI orqali qidirish:",
+             font=("Arial", 12),
+             bg=colors["bg"],
+             fg=colors["fg"]).pack(side=tk.LEFT, padx=5)
+    
+    
+    def search_by_imei():
+        search_text = search_entry.get().strip().lower()
+        if not search_text:
+            for item in tree.get_children():
+                tree.delete(item)
+
+            load_sales_data()  # Agar bo'sh bo'lsa, barcha ma'lumotlarni ko'rsatish
+            return
+            
+        try:
+            with open("sotish_file.json", 'r', encoding='utf-8') as f:
+                sales_data = json.load(f)
+            
+            # Avval jadvaldan barcha elementlarni o'chirish
+            for item in tree.get_children():
+                tree.delete(item)
+            
+            # Qidiruv natijalarini ko'rsatish
+            found = False
+            for i, sale in enumerate(sales_data, 1):
+                if search_text in sale["modeli"].lower():
+                    found = True
+                    tree.insert("", "end", values=(
+                        i,
+                        sale["nomi"],
+                        sale["modeli"],
+                        "****",
+                        "****",
+                        "****",
+                        sale["sotilgan_sana"],
+                        sale["mijoz_ismi"],
+                        sale["mijoz_telefon"]
+                    ))
+            
+            if not found:
+                messagebox.showinfo("Natija", "Bunday IMEI raqamli telefon topilmadi!")
+                for item in tree.get_children():  # Avval tozalash
+                    tree.delete(item)
+                load_sales_data()  # Barcha ma'lumotlarni qayta yuklash
+                
+        except Exception as e:
+            messagebox.showerror("Xatolik", f"Qidirishda xatolik: {str(e)}")
+        # qidiruv
+    search_entry = tk.Entry(search_frame, 
+                        font=("Arial", 12),
+                        bg=colors["entry_bg"],
+                        fg=colors["entry_fg"],
+                        width=30)  # Kenglikni oshirdik
+    search_entry.pack(side=tk.LEFT, padx=5)
+    
+    # Enter bosilganda qidirish
+    search_entry.bind('<Return>', lambda e: search_by_imei())
+
+
+
+
+
+
     # Statistika
     stats_frame = tk.Frame(root, bg=colors["bg"])
     stats_frame.pack(fill="x", padx=20, pady=10)
     
     # Yopish tugmasi
-    close_btn = tk.Button(root,
-                         text="Yopish",
+    close_btn = ctk.CTkButton(root,
+                         text=translations[language]["close"],
                          command=root.destroy,
-                         bg="#eb346b",
-                         fg="white",
-                         font=("Arial", 15),
-                         activebackground='#eb346b',
-                         activeforeground="white",
-                         padx=25)
+                         fg_color="#FF6B6B",  # Qizil rang
+                         hover_color="#FF4B4B",  # Hover ranggi
+                         text_color="white", 
+                         width=120,  # Kattaroq tugma
+                         height=40,
+                         corner_radius=10,
+                         font=("Arial", 14, "bold")
+                        )
     close_btn.pack(pady=15, padx=25)
+
+
     
     root.mainloop()
+
+
 
 
 def verify_price(event):
@@ -109,9 +279,18 @@ def verify_price(event):
         dialog.title("Tasdiqlash")
         dialog.geometry("300x150")
         dialog.configure(bg=colors["bg"])
+        # Dialog oynasini markazlashtirish
+        dialog.transient(root)   # Asosiy oynaga bog'lash
+        dialog.grab_set()        # Modallik
+        
+        # Oynani markazga joylash
+        x = root.winfo_x() + (root.winfo_width() - 300) // 2
+        y = root.winfo_y() + (root.winfo_height() - 150) // 2
+        dialog.geometry(f"300x150+{x}+{y}")
+
         
         tk.Label(dialog, 
-                text="Kodni kiriting:",
+                text=translations[language]["enter"],
                 font=("Arial", 12),
                 bg=colors["bg"]).pack(pady=10)
         
@@ -130,9 +309,9 @@ def verify_price(event):
                 
                 # Show actual price based on column
                 if column == '#4':
-                    values[3] = sale["narx"]
+                    values[3] = sale["asl_narx"]
                 elif column == '#5':
-                    values[4] = sale["sell_price"]
+                    values[4] = sale["sotish_narx"]
                 elif column == '#6':
                     values[5] = sale["foyda"]
                 
@@ -144,9 +323,8 @@ def verify_price(event):
         
         code_entry.bind('<Return>', lambda e: check_code())
         tk.Button(dialog, 
-                 text="Tasdiqlash",
                  command=check_code,
-                 bg=colors["button_bg"],
+                 bg=colors[""],
                  fg="white").pack(pady=10)
 
 
@@ -167,9 +345,9 @@ def load_sales_data():
                     i,
                     sale["nomi"],
                     sale["modeli"],
-                    sale["asl_narx"],
-                    sale["sotish_narx"],
-                    sale["foyda"],
+                    "****",
+                    "****",
+                    "****",
                     sale["sotilgan_sana"],
                     sale["mijoz_ismi"],
                     sale["mijoz_telefon"]

@@ -1,8 +1,12 @@
 [
     {
-        "nomi": "sxsd",
-        "modeli": "cscc",
-        "sana": "31/05/2025",
-        "narx": "200$"
+        "index": 1,
+        "nomi": "samsung a 16",
+        "modeli": "1235566",
+        "turi": "Samsung",
+        "narx": "$500.00",
+        "sana": "07/06/2025",
+        "holat": "Juda Yaxshi",
+        "qoshilgan_sana": "07/06/2025 13:52:02"
     }
 ]
