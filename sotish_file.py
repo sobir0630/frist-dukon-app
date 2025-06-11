@@ -322,10 +322,8 @@ def verify_price(event):
                 code_entry.delete(0, tk.END)
         
         code_entry.bind('<Return>', lambda e: check_code())
-        tk.Button(dialog, 
-                 command=check_code,
-                 bg=colors[""],
-                 fg="white").pack(pady=10)
+        tk.Button(dialog)
+
 
 
 

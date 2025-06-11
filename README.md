@@ -1,1 +1,0 @@
- <!-- // kup joyga kirish kodi 0630 ichki kirish almashtrsh kodi ichki123 yana bittasi 8410 -->

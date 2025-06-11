@@ -128,5 +128,25 @@
         "sotilgan_sana": "07/06/2025 12:02",
         "mijoz_ismi": "muzaffar",
         "mijoz_telefon": "+998935462485"
+    },
+    {
+        "nomi": "iphone 15 pro",
+        "modeli": "5555555",
+        "asl_narx": "$3000.00",
+        "sotish_narx": "$3000.00",
+        "foyda": "$0.00",
+        "sotilgan_sana": "08/06/2025 08:56",
+        "mijoz_ismi": "ibrohim",
+        "mijoz_telefon": "+998932366023"
+    },
+    {
+        "nomi": "redmi",
+        "modeli": "22445566",
+        "asl_narx": "$100.00",
+        "sotish_narx": "$200.00",
+        "foyda": "$100.00",
+        "sotilgan_sana": "11/06/2025",
+        "mijoz_ismi": "sobir",
+        "mijoz_telefon": "+998948200630"
     }
 ]

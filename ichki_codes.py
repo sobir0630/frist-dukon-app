@@ -481,12 +481,12 @@ class LoginWindow:
 
 
     
-#     def run(self):
-#         """Dasturni ishga tushirish"""
-#         self.login_window.mainloop()
+    def run(self):
+        """Dasturni ishga tushirish"""
+        self.login_window.mainloop()
 
 
 
 
-# app = LoginWindow()
-# app.run()
+app = LoginWindow()
+app.run()

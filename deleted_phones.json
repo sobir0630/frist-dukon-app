@@ -1,46 +1,35 @@
 [
     {
-        "index": "004",
-        "nomi": "iphone",
-        "modeli": "55446633",
-        "turi": "iphone",
-        "narx": 500,
-        "sana": "02/06/2025",
-        "holat": "yangi",
-        "qushilgan_vaqt": "02/06/2025 11:11:12",
-        "o'chirilgan_sana": "07/06/2025"
+        "index": 2,
+        "nomi": "sonnet",
+        "modeli": "5210541",
+        "turi": "Boshqa",
+        "narx": "$500.00",
+        "sana": "08/06/2025",
+        "holat": "Yangi",
+        "qoshilgan_sana": "08/06/2025 08:46:37",
+        "o'chirilgan_sana": "08/06/2025"
     },
     {
         "index": 4,
-        "nomi": "gakaxy j1 ace",
-        "modeli": "655456666",
-        "turi": "Boshqa",
-        "narx": "$500.00",
-        "sana": "07/06/2025",
-        "holat": "Yangi",
-        "qoshilgan_sana": "07/06/2025 11:58:07",
-        "o'chirilgan_sana": "07/06/2025"
-    },
-    {
-        "index": "500",
-        "nomi": "iphone",
-        "modeli": "55446633",
-        "turi": "500",
-        "narx": "500",
-        "sana": "iphone",
-        "holat": "55446633",
-        "qushilgan_sana": "500",
-        "o'chirilgan_sana": "07/06/2025"
-    },
-    {
-        "index": 3,
-        "nomi": "samsung",
-        "modeli": "55555555",
+        "nomi": "nimadirda ey",
+        "modeli": "6351052541",
         "turi": "iPhone",
-        "narx": "$3000.00",
-        "sana": "07/06/2025",
+        "narx": "$50000.00",
+        "sana": "08/06/2025",
         "holat": "Yangi",
-        "qoshilgan_sana": "07/06/2025 11:51:40",
-        "o'chirilgan_sana": "07/06/2025"
+        "qoshilgan_sana": "08/06/2025 08:49:56",
+        "o'chirilgan_sana": "08/06/2025"
+    },
+    {
+        "index": 4,
+        "nomi": "zaybela bila",
+        "modeli": "632145263",
+        "turi": "iPhone",
+        "narx": "$5000.00",
+        "sana": "08/06/2025",
+        "holat": "Yangi",
+        "qoshilgan_sana": "08/06/2025 08:50:38",
+        "o'chirilgan_sana": "08/06/2025"
     }
 ]
