@@ -4,7 +4,7 @@
         "nomi": "iphone",
         "modeli": "123548",
         "turi": "iPhone",
-        "narx": "$500.00",
+        "narx": "$550.00",
         "sana": "08/06/2025",
         "holat": "Yangi",
         "qoshilgan_sana": "08/06/2025 23:53:01"
@@ -31,7 +31,7 @@
     },
     {
         "index": 4,
-        "nomi": "redmi",
+        "nomi": "redmi a3",
         "modeli": "22445566",
         "turi": "Xiaomi",
         "narx": "$100.00",
@@ -48,16 +48,6 @@
         "sana": "08/06/2025",
         "holat": "Yangi",
         "qoshilgan_sana": "08/06/2025 23:56:09"
-    },
-    {
-        "index": 6,
-        "nomi": "iphone 15 pro max",
-        "modeli": "12345678",
-        "turi": "iPhone",
-        "narx": "$1000.00",
-        "sana": "08/06/2025",
-        "holat": "Yangi",
-        "qoshilgan_sana": "08/06/2025 23:57:36"
     },
     {
         "index": 7,
@@ -90,13 +80,23 @@
         "qoshilgan_sana": "11/06/2025 17:18:58"
     },
     {
-        "index": 10,
-        "nomi": "oppo",
-        "modeli": "987654321321654",
+        "index": 11,
+        "nomi": "iphone 15 pro max",
+        "modeli": "123456789123456",
         "turi": "iPhone",
-        "narx": "$300.00",
-        "sana": "11/06/2025",
+        "narx": "$1000.00",
+        "sana": "13/06/2025",
         "holat": "Yangi",
-        "qoshilgan_sana": "11/06/2025 17:20:03"
+        "qoshilgan_sana": "13/06/2025 20:23:19"
+    },
+    {
+        "index": 11,
+        "nomi": "IPHONE 15 pro max",
+        "modeli": "123456789123456",
+        "turi": "iPhone",
+        "narx": "$1000.00",
+        "sana": "13/06/2025",
+        "holat": "Новый",
+        "qoshilgan_sana": "13/06/2025 20:37:28"
     }
 ]

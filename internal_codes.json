@@ -1,14 +1,9 @@
 {
-    "system_codes": [
-        "SYS001",
-        "SYS002",
-        "SYS003"
-    ],
+
     "user_codes": [
-        "USR001",
-        "USR002"
+        "9959"
     ],
     "admin_codes": [
-        "ADM001"
+        "IDEAL_MOBILE+998995999959"
     ]
 }

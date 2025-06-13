@@ -1,35 +1,13 @@
 [
     {
-        "index": 2,
-        "nomi": "sonnet",
-        "modeli": "5210541",
-        "turi": "Boshqa",
-        "narx": "$500.00",
-        "sana": "08/06/2025",
-        "holat": "Yangi",
-        "qoshilgan_sana": "08/06/2025 08:46:37",
-        "o'chirilgan_sana": "08/06/2025"
-    },
-    {
-        "index": 4,
-        "nomi": "nimadirda ey",
-        "modeli": "6351052541",
+        "index": 10,
+        "nomi": "oppo",
+        "modeli": "987654321321654",
         "turi": "iPhone",
-        "narx": "$50000.00",
-        "sana": "08/06/2025",
+        "narx": "$300.00",
+        "sana": "11/06/2025",
         "holat": "Yangi",
-        "qoshilgan_sana": "08/06/2025 08:49:56",
-        "o'chirilgan_sana": "08/06/2025"
-    },
-    {
-        "index": 4,
-        "nomi": "zaybela bila",
-        "modeli": "632145263",
-        "turi": "iPhone",
-        "narx": "$5000.00",
-        "sana": "08/06/2025",
-        "holat": "Yangi",
-        "qoshilgan_sana": "08/06/2025 08:50:38",
-        "o'chirilgan_sana": "08/06/2025"
+        "qoshilgan_sana": "11/06/2025 17:20:03",
+        "o'chirilgan_sana": "13/06/2025"
     }
 ]

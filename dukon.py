@@ -654,8 +654,8 @@ def show_login_screen():
 
         # Sodda tekshirish (amaliy dasturda to'g'ri autentifikatsiya qo'llanishi kerak)
         # To'g'ri login va parol
-        correct_username = "Sobir"
-        correct_password = "0630"
+        correct_username = "IDEAL MOBILE"
+        correct_password = "9959"
 
         if username == CORRECT_USERNAME and password == CORRECT_PASSWORD:
             login_window.destroy()

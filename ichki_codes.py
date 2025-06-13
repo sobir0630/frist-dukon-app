@@ -14,9 +14,9 @@ class PasswordManager:
     def __init__(self):
         self.PASSWORDS_FILE = "app_config.json"
         self.CODES_FILE = "internal_codes.json"
-        self.DEFAULT_LOGIN_PASSWORD = "0630"
-        self.DEFAULT_INTERNAL_PASSWORD = "ichki123"
-        self.USERNAME = "Sobir"
+        self.DEFAULT_LOGIN_PASSWORD = "9959"
+        self.DEFAULT_INTERNAL_PASSWORD = "IDEAL_MOBILE+998995999959"
+        self.USERNAME = "IDEAL MOBILE"
         
     def hash_password(self, password):
         """Parolni hash qilish"""
@@ -66,9 +66,7 @@ class PasswordManager:
     def create_default_codes(self):
         """Standart ichki kodlar yaratish"""
         codes = {
-            "system_codes": ["SYS001", "SYS002", "SYS003"],
-            "user_codes": ["USR001", "USR002"],
-            "admin_codes": ["ADM001"]
+                "IDEAL MOBILE": "ichki123"
         }
         self.save_internal_codes(codes)
         return codes
@@ -490,3 +488,8 @@ class LoginWindow:
 
 app = LoginWindow()
 app.run()
+
+
+
+
+
