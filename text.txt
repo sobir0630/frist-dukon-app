@@ -1,0 +1,32 @@
+            _______MENU_______
+
+    """Dasturni eng kerakli kodlari bularni 
+    yuqotmang aks holda dastur qulflanib qolishi mumkin 
+    keyin dasturni qayta tiklab bulmasligi mumkin"""
+
+        - obshi dastur tozalash kodi = "aL9@Z!f4#pX$7vB1"
+        - DEFAULT_INTERNAL_PASSWORD = "IDEAL_MOBILE+998995999959"
+        - DEFAULT_LOGIN_PASSWORD = "9959"
+        - USERNAME = "IDEAL MOBILE"
+
+    """Dastur malumotlari kodlari bular orqali siz 
+        har qanday yashrin malumotni ochasiz:"""
+ 
+    - Dastur ichki kodlari = "0630", "8410", "9959"
+    - ichki kodlarga duch kelsangiz = "ichki123"
+
+    """Quyidagi kodlarni umiman yuqotmang bu dasturni 
+    hafsizligi uchun yozilgan kodlar bularni hechkimm
+    buzib kirolmasligi uchun qilingan"""
+
+        _______DASTURCHI_______
+    
+    """ISMI: Sobirjon
+        FAMILYASI: Mamasoliyev
+        EMAIL: mamasoliyevs538@gmail.com
+        TELEFON: +998948200630, +998701270630
+        MANZIL: Samarqanf viloyati, Oqdaryo tumani, Istiqlol mahallasi"""
+                                                                        
+
+
+

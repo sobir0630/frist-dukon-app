@@ -1,13 +1,13 @@
 [
     {
-        "index": 10,
-        "nomi": "oppo",
-        "modeli": "987654321321654",
+        "index": 1,
+        "nomi": "samsung s10 5g",
+        "modeli": "123456789456123",
         "turi": "iPhone",
-        "narx": "$300.00",
-        "sana": "11/06/2025",
+        "narx": "$200.00",
+        "sana": "24/07/2025",
         "holat": "Yangi",
-        "qoshilgan_sana": "11/06/2025 17:20:03",
-        "o'chirilgan_sana": "13/06/2025"
+        "qoshilgan_sana": "24/07/2025 08:25:02",
+        "o'chirilgan_sana": "24/07/2025"
     }
 ]

@@ -2,25 +2,31 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import simpledialog, ttk, filedialog
 import os
+import cv2
+from PIL import Image, ImageTk
 import json
 import time
+from datetime import datetime
 import threading
 import random
-from datetime import datetime
 import re
 import sys
 from tkinter import font
 import customtkinter as ctk
 import win32print
 import win32ui
-from PIL import Image, ImageDraw
 import subprocess
 import os
 import sys
 import subprocess
 from tkinter import messagebox
 import hashlib
-from ichki_codes import LoginWindow, PasswordManager
+import ichki_codes
+import notebook
+import print2
+import sotish_file
+import SEARCH
+
 
 
 # Global ma'lumotlar
@@ -34,13 +40,14 @@ data_file = "telefon_data.json"  # Ma'lumotlarni saqlash uchun fayl
 # Tarjimalar (O'zbek va Rus)
 translations = {
     "uz": {
+        "reset": "Dasturni butunlay tozalash",
         "title": "IDEAL MOBILE",
-        "phone_menu": "товары",
+        "phone_menu": "Tovar",
         "add_phone": "📱 Telefon qo‘shish",
         "delete_phone": "❌ Telefonni o‘chirish",
         "view_phones": "📋 Telefonlar ro‘yxati",
-        "info_menu": "Информация",
-        "settings": "Настройки",
+        "info_menu": "Malumotlar",
+        "settings": "Sozlamalar",
         "success": "Muvaffaqiyatli",
         "error": "Xatolik",
         "added": "qo'shildi!",
@@ -56,11 +63,11 @@ translations = {
         "price_label": "Narxi",
         "date_label": "Sanasi",
         "change_language": "Tilni almashtirish",
-        "toggle_dark_mode": "Tungi rejim",
+        "dark_mode": "Tungi rejim",
         "login_title": "Kirish oynasi",
         "username": "Ism:",
         "password": "Parol:",
-        "login": "Kirish",
+        "login": "Chiqish",
         "welcome": "Xush kelibsiz, hurmatli",
         "not_found": "topilmadi!",
         "logout": "Chiqish",
@@ -176,15 +183,19 @@ translations = {
         "title": "Telefon do'kon dasturi",
         "phone_menu": "Telefonlar",
         "settings_menu": "Sozlamalar",
-        "yangilar": "yangilar"
+        "yangilar": "yangilar",
+        "note": "Eslatmalar",
+        "sell_0": "Sotish narxi 0 dan katta bo'lishi kerak!"
 
     },
     "ru": {
-        "yangilar": "yangilar",
+        "reset": "Полная очистка программы",
+        "note": "Примечания",
+        "yangilar": "Новички",
         "settings_menu": "Настройки",
         "title": "Магазин телефонов",
         "phone_menu": "Телефоны",
-        "print": "🖨️ Принтер",
+        "print": "🖨️ БАР КОД",
         "phone_istory": "📊 История телефона",
         "seel_phon": "📱 Проданные телефоны",
         "4_imai_qdr": "Введите последние 4 цифры номера IMEI",
@@ -247,9 +258,9 @@ translations = {
         "tel_index": "телефонный справочник",
         "title": "Программа магазина телефонов",
         "phone_menu": "Телефонные товары",
-        "add_phone": "Добавить телефон",
-        "delete_phone": "Удалить телефон",
-        "view_phones": "Список телефонов",
+        "add_phone": "📱 Добавить телефон",
+        "delete_phone": "❌ Удалить телефон",
+        "view_phones": "📋 Список телефонов",
         "info_menu": "Информация",
         "settings": "Настройки",
         "success": "Успешно",
@@ -267,11 +278,11 @@ translations = {
         "price_label": "Цена",
         "date_label": "Дата добавления",
         "change_language": "Сменить язык",
-        "toggle_dark_mode": "Ночной режим",
+        "dark_mode": "Ночной режим",
         "login_title": "Окно входа",
         "username": "Имя:",
         "password": "Пароль:",
-        "login": "Войти",
+        "login": "Выход",
         "welcome": "Добро пожаловать, уважаемый",
         "not_found": "не найден!",
         "logout": "Выход",
@@ -330,75 +341,87 @@ themes = {
     "classic": {
         "light": {
             "bg": "#DFFFD6",
-            "fg": "#000000",
-            "button_bg": "#228B22",
+            "fg": "#C5CAC7",
+            "button_bg": "#1E88E5",
             "button_fg": "#FFFFFF",
             "entry_bg": "#FFFFFF",
             "entry_fg": "#000000",
-            "highlight_bg": "#9ACD32",
-            "border": "#228B22"
+            "highlight_bg": "#4932CD",
+            "border": "#35228B",
+            "menu_bg": "#DFFFD6",   # <-- Qo'shildi
+            "menu_fg": "#5C3131" 
         },
         "dark": {
             "bg": "#1E1E1E",
-            "fg": "#FFFFFF",
-            "button_bg": "#228B22",
+            "fg": "#C5CAC7",
+            "button_bg": "#1E88E5",
             "button_fg": "#FFFFFF",
             "entry_bg": "#333333",
             "entry_fg": "#FFFFFF",
             "highlight_bg": "#3A5F0B",
-            "border": "#3A5F0B"
+            "border": "#3A5F0B",
+            "menu_bg": "#1E1E1E",   # <-- Qo'shildi
+            "menu_fg": "#FFFFFF" 
         }
     },
     "blue": {
         "light": {
             "bg": "#E6F2FF",
-            "fg": "#000000",
+            "fg": "#C5CAC7",
             "button_bg": "#1E88E5",
             "button_fg": "#FFFFFF",
             "entry_bg": "#FFFFFF",
             "entry_fg": "#000000",
             "highlight_bg": "#64B5F6",
-            "border": "#1E88E5"
+            "border": "#1E88E5",
+            "menu_bg": "#1E1E1E",   # <-- Qo'shildi
+            "menu_fg": "#FFFFFF" 
         },
         "dark": {
             "bg": "#0A1929",
-            "fg": "#FFFFFF",
+            "fg": "#C5CAC7",
             "button_bg": "#1976D2",
             "button_fg": "#FFFFFF",
             "entry_bg": "#102A43",
             "entry_fg": "#FFFFFF",
             "highlight_bg": "#1565C0",
-            "border": "#1565C0"
+            "border": "#1565C0",
+            "menu_bg": "#1E1E1E",   # <-- Qo'shildi
+            "menu_fg": "#FFFFFF" 
         }
     },
     "green": {
         "light": {
             "bg": "#E8F5E9",
-            "fg": "#000000",
-            "button_bg": "#43A047",
+            "fg": "#C5CAC7",
+            "button_bg": "#1E88E5",
             "button_fg": "#FFFFFF",
             "entry_bg": "#FFFFFF",
             "entry_fg": "#000000",
             "highlight_bg": "#81C784",
-            "border": "#43A047"
+            "border": "#43A047",
+            "menu_bg": "#1E1E1E",   # <-- Qo'shildi
+            "menu_fg": "#FFFFFF" 
         },
         "dark": {
             "bg": "#0A1F0A",
-            "fg": "#FFFFFF",
+            "fg": "#C5CAC7",
             "button_bg": "#2E7D32",
             "button_fg": "#FFFFFF",
             "entry_bg": "#1B5E20",
             "entry_fg": "#FFFFFF",
             "highlight_bg": "#2E7D32",
-            "border": "#2E7D32"
+            "border": "#2E7D32",
+            "menu_bg": "#1E1E1E",   # <-- Qo'shildi
+            "menu_fg": "#FFFFFF" 
         }
     },
 
     "white": {  # Kunduzgi tema
         "light": {
             "bg": "#FFFFFF",
-            "fg": "#333333",
-            "button_bg": "#4CAF50",
+            "fg": "#C5CAC7",
+            "button_bg": "#1E88E5",
             "button_fg": "#FFFFFF", 
             "entry_bg": "#F5F5F5",
             "entry_fg": "#333333",
@@ -414,7 +437,7 @@ themes = {
         },
         "dark": {  # Fallback for dark mode
             "bg": "#FFFFFF",
-            "fg": "#333333",
+            "fg": "#C5CAC7",
             "button_bg": "#4CAF50",
             "button_fg": "#FFFFFF",
             "entry_bg": "#F5F5F5",
@@ -427,7 +450,7 @@ themes = {
     "black": {  # Kechki tema
         "light": {  # Fallback for light mode 
             "bg": "#121212",
-            "fg": "#FFFFFF",
+            "fg": "#C5CAC7",
             "button_bg": "#BB86FC",
             "button_fg": "#000000",
             "entry_bg": "#1E1E1E",
@@ -437,7 +460,7 @@ themes = {
         },
         "dark": {
             "bg": "#121212",
-            "fg": "#FFFFFF",
+            "fg": "#C5CAC7",
             "button_bg": "#BB86FC",
             "button_fg": "#000000",
             "entry_bg": "#1E1E1E", 
@@ -502,11 +525,11 @@ def center_window(window):
 #         root_app.configure(bg=colors["bg"])
 #         # Boshqa UI elementlarini yangilash...
 
-# Kunduzgi mavzuga o'tish uchun
-    change_theme("white")
+# # Kunduzgi mavzuga o'tish uchun
+#     change_theme("white")
 
-    # Kechki mavzuga o'tish uchun
-    change_theme("black")
+#     # Kechki mavzuga o'tish uchun
+#     change_theme("black")
 
 
     # Menu qismiga qo'shish
@@ -544,14 +567,33 @@ def save_data():
 
 
 def load_data():
-    global phones
+    global phones, sold_phones, deleted_phones
     try:
+        # Telefon ma'lumotlarini yuklash
         if os.path.exists(data_file):
             with open(data_file, 'r', encoding='utf-8') as f:
                 phones = json.load(f)
         else:
-            # Demo rejimda ma'lumotlarni generatsiya qilish
-            generate_demo_data()
+            phones = []
+        
+        # Sotilgan telefonlar ma'lumotlarini yuklash
+        sold_file = "sold_phones.json"
+        if os.path.exists(sold_file):
+            with open(sold_file, 'r', encoding='utf-8') as f:
+                sold_phones = json.load(f)
+        else:
+            sold_phones = []
+            if sold_phones:
+                messagebox.showinfo("saqlandi", "sotilgan telefonlar fayli qayta saqlandi")
+            
+        
+        # O'chirilgan telefonlar ma'lumotlarini yuklash
+        deleted_file = "deleted_phones.json"
+        if os.path.exists(deleted_file):
+            with open(deleted_file, 'r', encoding='utf-8') as f:
+                deleted_phones = json.load(f)
+        else:
+            deleted_phones = []
     except Exception as e:
         messagebox.showerror(translations[language]["error"], str(e))
 
@@ -561,43 +603,7 @@ def on_exit():
         save_data()
     root_app.destroy()
 
-
-def generate_demo_data():
-
-
-    # 10 ta telefon generatsiya qilish
-    phones = []
-    pass
-    for _ in range(10):
-        brand_data = random.choice(phone_models)
-        brand = brand_data["brand"]
-        model = random.choice(brand_data["models"])
-
-        # Random narx
-        min_price, max_price = price_ranges[brand]
-        price = f"{random.randint(min_price, max_price)} $"
-
-        # Random narx
-        date_str = ""
-
-
-        # Random sana (oxirgi 6 oy ichida)
-        days_ago = random.randint(1, 180)
-        date_obj = datetime.now()
-        date_obj = datetime.now() - timedelta(days=days_ago)
-        if date_obj.day > 28:
-            date_obj = date_obj.replace(day=28)
-        date_str = date_obj.strftime("%d/%m/%Y")
-
-        phones.append({
-            "nomi": brand,
-            "modeli": model,
-            "narx": price,
-            "sana": date_str
-        })
-
-
-# Telefon uchun rasmni olish
+    # Telefon uchun rasmni olish
 # Telefon rasmlari uchun lug‘at
 phone_images = {
     "iphone": "📲",
@@ -1045,7 +1051,13 @@ def add_phone():
                 progress_bar.set(i / 100)
                 progress_percent.configure(text=f"{i}%")
                 progress_window.update()
-                time.sleep(0.02)
+                import time
+
+                print("Jarayon boshlanmoqda...")
+                time.sleep(0.01)  # 0.01 soniya kutadi
+                print("Yakunlandi.")
+
+                # time.sleep(0.03)
 
             # Telefon ma'lumotlarini yaratish
             phone_data = {
@@ -1059,39 +1071,32 @@ def add_phone():
                 "qoshilgan_sana": datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             }
 
+
+
+
+
             # Global ro'yxatga qo'shish
             phones.append(phone_data)
-            
-            # saqlash fayli
-            def save_data():
-                try:
-                    with open("telefon_data.json", "w", encoding="utf-8") as f:
-                        json.dump(phones, f, ensure_ascii=False, indent=4)
-                    print("Ma'lumotlar muvaffaqiyatli saqlandi.")
-                except Exception as e:
-                    print(f"Saqlashda xatolik: {e}")
-
-            # Saqlash (agar save_data funksiyasi mavjud bo'lmasa)
-            try:
-                save_data()
-            except NameError:
-                # Faylga saqlash
-                try:
-                    with open("telefon_data.json", "w", encoding="utf-8") as f:
-                        json.dump(phones, f, ensure_ascii=False, indent=4)
-                except Exception as e:
-                    print(f"Saqlashda xatolik: {e}")
-
-
             progress_window.destroy()
-            messagebox.showinfo("✅ Muvaffaqiyatli", 
-                              f"🎉 {name} muvaffaqiyatli qo'shildi!\n\n"
-                              f"🆔 Indeks: #{next_index:03d}\n"
-                              f"💰 Narx: ${price:.2f}")
-            add_window.destroy()
 
-        # Progress animatsiyasini alohida thread da ishga tushirish
+            
+            try:
+                with open("telefon_data.json", "w") as f1:
+                    json.dump(phones, f1, indent=4)
+                    
+                    messagebox.showinfo("✅ Muvaffaqiyatli", 
+                        f"🎉 {name} muvaffaqiyatli qo'shildi!\n\n"
+                        f"🆔 Indeks: #{next_index:03d}\n"
+                        f"💰 Narx: ${price:.2f}")
+                    add_window.destroy()
+                    
+            except NameError:
+                print("Nomida xatolik bor")
+            
+            messagebox.showinfo("bajarildi", "hammasi yaxshi bajarildi:)")
+                # Progress animatsiyasini alohida thread da ishga tushirish
         threading.Thread(target=animate_progress, daemon=True).start()
+        
 
 
 
@@ -1556,10 +1561,10 @@ def view_phones():
              bg=colors["bg"], fg=colors["fg"]).pack(side=tk.LEFT, padx=(0, 5))
 
     sort_options = [
-        translations[language]["sort_name"],
+        translations[language]["sort_date"],
         translations[language]["sort_price_asc"],
         translations[language]["sort_price_desc"],
-        translations[language]["sort_date"]
+        translations[language]["sort_name"]
     ]
 
     sort_var = tk.StringVar()
@@ -1696,15 +1701,14 @@ def view_phones():
     def sort_phones(phone_list):
         sort_choice = sort_var.get()
 
-        if sort_choice == translations[language]["sort_name"]:
-            return sorted(phone_list, key=lambda x: x["nomi"], reverse=True)  # Alfavit bo‘yicha teskari tartib
+        if sort_choice == translations[language]["sort_date"]:
+            return sorted(phone_list, key=lambda x: datetime.strptime(x["sana"], "%d/%m/%Y"), reverse=True)
         elif sort_choice == translations[language]["sort_price_asc"]:
             return sorted(phone_list, key=lambda x: clean_price(x["narx"]), reverse=True)  # Eng kattasidan kichigiga
         elif sort_choice == translations[language]["sort_price_desc"]:
             return sorted(phone_list, key=lambda x: clean_price(x["narx"]))  # Eng kichigidan kattasiga
-        elif sort_choice == translations[language]["sort_date"]:
-            return sorted(phone_list, key=lambda x: datetime.strptime(x["sana"], "%d/%m/%Y"),
-                          reverse=True)  # Eng yangi sanadan eski sanaga
+        elif sort_choice == translations[language]["sort_name"]:
+            return sorted(phone_list, key=lambda x: x["nomi"], reverse=True)  # Alfavit bo‘yicha teskari tartib
 
         return phone_list
 
@@ -2538,9 +2542,6 @@ def save_data():
     """Ma'lumotlarni saqlash funksiyasi (haqiqiy kodda bo'lishi kerak)"""
     pass
 
-def save_sold_phones():
-    """Sotilgan telefonlar ma'lumotlarini saqlash funksiyasi"""
-    pass
 
 
 
@@ -2573,6 +2574,17 @@ def open_sales_file():
     """Sotish faylini ochish"""
     try:
         subprocess.Popen([sys.executable, "sotish_file.py"])
+    except FileNotFoundError:
+        messagebox.showerror(translations[language]["xato"], "sotish_file.py fayli topilmadi!")
+    except Exception as e:
+        messagebox.showerror(translations[language]["xato"], f"Xatolik yuz berdi: {str(e)}")
+
+
+# eslatmalar faylini ochish funksiyasi
+def open_eslatma_file():
+    """Sotish faylini ochish"""
+    try:
+        subprocess.Popen([sys.executable, "notebook.py"])
     except FileNotFoundError:
         messagebox.showerror(translations[language]["xato"], "sotish_file.py fayli topilmadi!")
     except Exception as e:
@@ -2965,12 +2977,12 @@ def print_selected_phone(tree):
     # Print phone details
     print_phone_details(phone_data)
     def redirect_to_print_file():
-        print_file.view_print_screen()
+        print2.view_print_screen()
 
     redirect_to_print_file()
 def view_print_screen():
     
-#    return print_file.view_print_screen()
+    # return print_file.view_print_screen()
     
     if not phones:
         messagebox.showerror(translations[language]["error"], "Telefonlar mavjud emas!")
@@ -3077,273 +3089,69 @@ def printer_file_ochish():
         messagebox.showerror("Xatolik", f"Xatolik yuz berdi: {str(e)}")
 
 ############################
-def search_phone_by_imei():
-    """IMEI raqamning oxirgi 4 ta raqami orqali telefonni qidirish"""
-    search_window = tk.Toplevel(root_app)
-    search_window.title(translations[language]["tel_serch"])
-    search_window.geometry("500x400")
-    search_window.configure(bg=colors["bg"])
-    center_window(search_window)
-    
-    # Sarlavha
-    header = tk.Label(search_window, text=translations[language]["tel_qdr_imai"],
-                      font=("Arial", 16, "bold"), bg=colors["bg"], fg=colors["fg"])
-    header.pack(pady=(15, 20))
-    
-    # Qidiruv formasi
-    search_frame = tk.Frame(search_window, bg=colors["bg"])
-    search_frame.pack(pady=10, padx=20, fill="x")
-    
-    tk.Label(search_frame, text=translations[language]["4_imai"], bg=colors["bg"], fg=colors["fg"],
-             font=("Arial", 12)).pack(side=tk.LEFT, padx=(0, 10))
-    
-    search_entry = tk.Entry(search_frame, font=("Arial", 12), width=15,
-                           bg=colors["entry_bg"], fg=colors["entry_fg"])
-    search_entry.pack(side=tk.LEFT, padx=(0, 10))
-    search_entry.focus()  # Kursor qidiruv maydoniga joylashadi
-    
-    # Natijalar uchun jadval
-    result_frame = tk.Frame(search_window, bg=colors["bg"])
-    result_frame.pack(pady=10, padx=20, fill="both", expand=True)
-    
-    # Scrollable frame for results
-    results_canvas = tk.Canvas(result_frame, bg=colors["bg"], highlightthickness=0)
-    results_canvas.pack(side=tk.LEFT, fill="both", expand=True)
-    
-    scrollbar = ttk.Scrollbar(result_frame, orient="vertical", command=results_canvas.yview)
-    scrollbar.pack(side=tk.RIGHT, fill="y")
-    
-    results_canvas.configure(yscrollcommand=scrollbar.set)
-    
-    results_frame = tk.Frame(results_canvas, bg=colors["bg"])
-    results_canvas.create_window((0, 0), window=results_frame, anchor="nw")
-    
-    results_frame.bind("<Configure>", lambda e: results_canvas.configure(scrollregion=results_canvas.bbox("all")))
-    
-    # Qidiruv natijalarini ko'rsatish
-    def display_results(search_text):
-        # Avvalgi natijalarni o'chirish
-        for widget in results_frame.winfo_children():
-            widget.destroy()
-        
-        if not search_text:
-            tk.Label(results_frame, text=translations[language]["4_imai_qrd"],
-                    bg=colors["bg"], fg=colors["fg"], font=("Arial", 12)).pack(pady=10)
-            return
-        
-        # Telefonlar ro'yxatidan qidirish
-        found_phones = []
-        
-        # Avval faol telefonlar ichidan qidirish
-        for phone in phones:
-            imei = phone["modeli"]
-            if imei[-4:] == search_text:
-                found_phones.append((phone, "active"))
-        
-        # Sotilgan telefonlar ichidan qidirish
-        for phone in sold_phones:
-            imei = phone["modeli"]
-            if imei[-4:] == search_text:
-                found_phones.append((phone, "sold"))
-        
-        if not found_phones:
-            tk.Label(results_frame, text=f"'{search_text}' raqamli IMEI bilan telefon topilmadi.",
-                    bg=colors["bg"], fg="#FF6B6B", font=("Arial", 12)).pack(pady=10)
-            return
-        
-        # Topilgan telefonlarni ko'rsatish
-        tk.Label(results_frame, text=f"{len(found_phones)} ta natija topildi:",
-                bg=colors["bg"], fg=colors["fg"], font=("Arial", 12, "bold")).pack(pady=(10, 15), anchor="w")
-        
-        for i, (phone, status) in enumerate(found_phones):
-            # Har bir telefon uchun alohida panel
-            phone_frame = tk.Frame(results_frame, bg="#ffffff", bd=1, relief=tk.SOLID)
-            phone_frame.pack(fill="x", pady=5, padx=5)
-            
-            # Telefon ma'lumotlari
-            info_frame = tk.Frame(phone_frame, bg="#ffffff")
-            info_frame.pack(fill="x", padx=10, pady=10)
-            
-            # Sarlavha - telefon nomi va holati
-            status_text = "✅ Mavjud" if status == "active" else "💰 Sotilgan"
-            status_color = "#4CAF50" if status == "active" else "#FF9800"
-            
-            header_frame = tk.Frame(info_frame, bg="#ffffff")
-            header_frame.pack(fill="x", pady=(0, 5))
-            
-            tk.Label(header_frame, text=phone["nomi"], bg="#ffffff", fg="#333333",
-                    font=("Arial", 12, "bold")).pack(side=tk.LEFT)
-            
-            tk.Label(header_frame, text=status_text, bg=status_color, fg="white",
-                    font=("Arial", 10), padx=5, pady=2).pack(side=tk.RIGHT)
-            
-            # IMEI va narx
-            details_frame = tk.Frame(info_frame, bg="#ffffff")
-            details_frame.pack(fill="x", pady=2)
-            
-            tk.Label(details_frame, text=f"IMEI: {phone['modeli']}", bg="#ffffff", fg="#666666",
-                    font=("Arial", 11)).pack(side=tk.LEFT, padx=(0, 20))
-            
-            tk.Label(details_frame, text=f"Narx: {phone['narx']}", bg="#ffffff", fg="#666666",
-                    font=("Arial", 11)).pack(side=tk.LEFT)
-            
-            # Sana
-            date_frame = tk.Frame(info_frame, bg="#ffffff")
-            date_frame.pack(fill="x", pady=2)
-            
-            date_label = "Qo'shilgan sana: " if status == "active" else "Sotilgan sana: "
-            tk.Label(date_frame, text=f"{date_label}{phone['sana']}", bg="#ffffff", fg="#666666",
-                    font=("Arial", 11)).pack(side=tk.LEFT)
-            
-            # Amallar uchun tugmalar
-            if status == "active":
-                # Mavjud telefon uchun sotish tugmasi
-                def sell_this_phone(phone_idx):
-                    search_window.destroy()
-                    # Kerakli telefon indeksini o'rnatish
-                    idx = -1
-                    for i, p in enumerate(phones):
-                        if p["modeli"] == phone["modeli"]:
-                            idx = i
-                            break
-                    
-                    if idx != -1:
-                        # Telefonni tanlash
-                        phone_tree.selection_set(phone_tree.get_children()[idx])
-                        # Sotish funksiyasini chaqirish
-                        sell_phone()
-                
-                # Telefon indeksini topish
-                for i, p in enumerate(phones):
-                    if p["modeli"] == phone["modeli"]:
-                        # break4
+def open_search():
+    """qidruv funksiyasi yangi fayilga saqlandi uni avvalgi versiyasida bir nechta xatoliklar borligi sabab
+    yangi fayilga chroylirq formatga uchrib kurchirldi"""
+    try:
+        # tuliq fayil kursatish
+        def run_search():
+            file_path = os.path.join(os.path.dirname(__file__), "SEARCH.py")
+            python_exe = sys.executable
+            subprocess.Popen([python_exe, file_path])
+        threading.Thread(target=run_search, daemon=True).start()
+    except FileNotFoundError:
+        messagebox.showerror("Xatolik", "SEARCH.py fayli topilmadi!")
+    except Exception as e:
+        messagebox.showerror("Xatolik", f"Xatolik yuz berdi: {str(e)}")
 
-                    # ...existing code...
-    
-                        for i, (phone, status) in enumerate(found_phones):
-                            if status == "active":
-                                phone_frame = tk.Frame(results_frame, bg="#ffffff", bd=1, relief=tk.SOLID)
-                                phone_frame.pack(fill="x", pady=5, padx=5)
-                                
-                                info_frame = tk.Frame(phone_frame, bg="#ffffff")
-                                info_frame.pack(fill="x", padx=10, pady=10)
-                                
-                                # ...phone info labels...
-                                
-                                # Sotish tugmasi
-                                def sell_this_phone_action(phone_data):
-                                    def confirm_and_sell():
-                                        # Mijoz ma'lumotlarini so'rash
-                                        customer_name = simpledialog.askstring("Mijoz ismi", "Mijoz ismini kiriting:", parent=search_window)
-                                        if not customer_name:
-                                            return
-                                        customer_phone = simpledialog.askstring("Mijoz telefoni", "Mijoz telefon raqamini kiriting:", parent=search_window)
-                                        if not customer_phone:
-                                            return
-                                        sell_price = simpledialog.askstring("Sotish narxi", "Sotish narxini kiriting ($ bilan):", parent=search_window)
-                                        if not sell_price:
-                                            return
-                                        try:
-                                            # Narxni float ga o'tkazish
-                                            sell_price_val = float(str(sell_price).replace("$", "").strip())
-                                            original_price_val = float(re.sub(r"[^\d.]", "", str(phone_data['narx'])))
-                                            profit = sell_price_val - original_price_val
-                                        except Exception:
-                                            messagebox.showerror("Xatolik", "Noto'g'ri narx kiritildi!")
-                                            return
-
-                                        confirm_text = (
-                                            f"Sotish ma'lumotlari:\n\n"
-                                            f"Telefon: {phone_data['nomi']}\n"
-                                            f"IMEI: {phone_data['modeli']}\n"
-                                            f"Asl narx: {phone_data['narx']}\n"
-                                            f"Sotish narx: ${sell_price_val:.2f}\n"
-                                            f"Foyda: ${profit:.2f}\n\n"
-                                            f"Mijoz: {customer_name}\n"
-                                            f"Telefon: {customer_phone}\n\n"
-                                            f"Sotishni tasdiqlaysizmi?"
-                                        )
-                                        if not messagebox.askyesno("Tasdiqlash", confirm_text, parent=search_window):
-                                            return
-
-                                        # Sotilganlar ro'yxatiga qo'shish
-                                        sale_record = {
-                                            "nomi": phone_data["nomi"],
-                                            "modeli": phone_data["modeli"],
-                                            "asl_narx": phone_data["narx"],
-                                            "sotish_narx": f"${sell_price_val:.2f}",
-                                            "foyda": f"${profit:.2f}",
-                                            "sotilgan_sana": datetime.now().strftime("%d/%m/%Y"),
-                                            "mijoz_ismi": customer_name,
-                                            "mijoz_telefon": customer_phone
-                                        }
-                                        try:
-                                            # Faylga yozish
-                                            try:
-                                                with open("sotish_file.json", 'r', encoding='utf-8') as f:
-                                                    sales_data = json.load(f)
-                                            except (FileNotFoundError, json.JSONDecodeError):
-                                                sales_data = []
-                                            sales_data.append(sale_record)
-                                            with open("sotish_file.json", 'w', encoding='utf-8') as f:
-                                                json.dump(sales_data, f, ensure_ascii=False, indent=4)
-                                        except Exception:
-                                            pass
-                                        # phones dan o'chirish va sold_phones ga qo'shish
-                                        for idx, p in enumerate(phones):
-                                            if p["modeli"] == phone_data["modeli"]:
-                                                phones.pop(idx)
-                                                break
-                                        sold_phones.append(sale_record)
-                                        save_data()
-                                        save_sold_phones()
-                                        messagebox.showinfo("Muvaffaqiyatli", f"{phone_data['nomi']} muvaffaqiyatli sotildi!", parent=search_window)
-                                        search_window.destroy()
-
-                                    sell_btn = tk.Button(info_frame,
-                                                        text="sotish",
-                                                        command=confirm_and_sell,
-                                                        bg="#4CAF50",
-                                                        fg="white",
-                                                        font=("Arial", 10, "bold"),
-                                                        padx=10)
-                                    sell_btn.pack(anchor="e", pady=(5, 0))
-
-                                sell_this_phone_action(phone)
-    
-    # Qidiruv tugmasi bosilganda
-    def search():
-        search_text = search_entry.get().strip()
-        if len(search_text) > 4:
-            search_text = search_text[-4:]  # Faqat oxirgi 4 ta raqamni olish
-            search_entry.delete(0, tk.END)
-            search_entry.insert(0, search_text)
-        
-        display_results(search_text)
-    
-    # Qidiruv tugmasi
-    search_btn = tk.Button(search_frame, text=translations[language]["qdr"], command=search,
-                          bg=colors["button_bg"], fg=colors["button_fg"],
-                          font=("Arial", 12))
-    search_btn.pack(side=tk.LEFT)
-    
-    # Enter tugmasi bosilganda ham qidirish
-    search_entry.bind("<Return>", lambda event: search())
-    
-    # Dastlabki ko'rinish
-    tk.Label(results_frame, text=translations[language]["4_imai_qdr"],
-            bg=colors["bg"], fg=colors["fg"], font=("Arial", 12)).pack(pady=10)
-    
-    # Yopish tugmasi
-    close_btn = tk.Button(search_window, text=translations[language]["yop"], command=search_window.destroy,
-                         bg="#FF6B6B", fg="white", font=("Arial", 12))
-    close_btn.pack(pady=15)
 ############################
 
+
+def factory_reset():
+    """Dastur ma'lumotlarini tozalash va noldan boshlash (ichki parol saqlanadi)"""
+    if not messagebox.askyesno("Diqqat!", "Barcha ma'lumotlar (telefonlar, sotilganlar, login paroli, username) o'chiriladi. Davom etasizmi?"):
+        return
+
+    # Kod so‘rash
+    kod = simpledialog.askstring("Xavfsizlik kodi", "Dastur tozalash kodi kiriting:", show="*")
+    if kod != "aL9@Z!f4#pX$7vB1":  # bu yerni xohlagan kodga o‘zgartirishingiz mumkin
+        messagebox.showerror("Xato", "Noto‘g‘ri kod kiritildi. Tozalash bekor qilindi.")
+        return
+
+    # O'chiriladigan fayllar ro'yxati
+    files_to_delete = [
+        "telefon_data.json",
+        "sotish_file.json",
+        "app_config.json",
+        "data.json",
+        "deleted_phones.json",
+        "notebook_data.json",
+        "selected_phone.json",
+        "sold_phones.json"
+    ]
+    for file in files_to_delete:
+        if os.path.exists(file):
+            try:
+                os.remove(file)
+            except Exception as e:
+                messagebox.showerror("Xatolik", f"{file} faylini o'chirishda xatolik: {str(e)}")
+
+    # internal_codes.json faqat ichki parolni saqlab qoladi
+    codes_file = "internal_codes.json"
+    codes = {"IDEAL MOBILE": "ichki123"}
+    with open(codes_file, "w", encoding="utf-8") as f:
+        json.dump(codes, f, ensure_ascii=False, indent=4)
+
+    messagebox.showinfo("Tayyor", "Dastur tozalandi! Qayta ishga tushadi.")
+    python = sys.executable
+    os.execl(python, python, *sys.argv)
+        
+    
 
 language = "ru"  # yoki "ru"
 menu_items = {}
 button_items = {}
+
 
 
 def change_language():
@@ -3352,8 +3160,11 @@ def change_language():
     update_ui_texts()
 
 def update_ui_texts():
+    # Dastur sarlavhasi
     if 'root_app' in globals():
-        root_app.title("IDEAL MOBILE")
+        root_app.title(translations[language]["title"])
+
+
 
     # Menyular
     if "phone_menu" in menu_items:
@@ -3363,10 +3174,12 @@ def update_ui_texts():
         phone_menu.entryconfig(2, label=translations[language]["view_phones"])
 
     if "yangilar" in menu_items:
+        yangilar_menu = menu_items["yangilar"]
         yangilar_menu.entryconfig(0, label=translations[language]["phone_stats"])
         yangilar_menu.entryconfig(1, label=translations[language]["chop_et"])
         yangilar_menu.entryconfig(2, label=translations[language]["print"])
         yangilar_menu.entryconfig(3, label=translations[language]["qdr"])
+
 
 
     if "info_menu" in menu_items:
@@ -3378,7 +3191,7 @@ def update_ui_texts():
     if "settings_menu" in menu_items:
         settings_menu = menu_items["settings_menu"]
         settings_menu.entryconfig(0, label=translations[language]["change_language"])
-        settings_menu.entryconfig(1, label=translations[language]["toggle_dark_mode"])
+        settings_menu.entryconfig(1, label=translations[language]["dark_mode"])
         settings_menu.entryconfig(3, label=translations[language]["login"])
 
 
@@ -3394,6 +3207,29 @@ def update_ui_texts():
     for key, btn in button_items.items():
         if key in translations[language]:
             btn.configure(text=translations[language][key])
+    
+    if "sidebar" in menu_items:
+        for section, btn_list in menu_items["sidebar"].items():
+            for i, btn in enumerate(btn_list):
+                key = None
+                if section == "phone_menu":
+                    key = ["add_phone", "delete_phone", "view_phones", "phone_stats"][i]
+                elif section == "info_menu":
+                    key = ["save_data", "load_data", "about"][i]
+                elif section == "settings":
+                    key = ["change_language", "dark_mode", "reset", "login_title"][i]
+                if key and key in translations[language]:
+                    btn.configure(text=translations[language][key])
+                    
+    if "section_labels" in menu_items:
+        for key, lbl in menu_items["section_labels"].items():
+            if key in translations[language]:
+                lbl.configure(text=translations[language][key])
+
+
+            
+            
+
 
 
 def main_application():
@@ -3403,38 +3239,190 @@ def main_application():
     root_app.state('zoomed')
     root_app.configure(bg=colors["bg"])
     center_window(root_app)
+    
+    
+
 
     # Menu
     menubar = tk.Menu(root_app)
     root_app.config(menu=menubar)
 
-    # Telefonlar menyusi
-    phone_menu = tk.Menu(menubar, tearoff=0)
-    menubar.add_cascade(label=translations[language]["phone_menu"], menu=phone_menu)
-    phone_menu.add_command(label=translations[language]["add_phone"], command=add_phone)
-    phone_menu.add_command(label=translations[language]["delete_phone"], command=delete_phone)
-    phone_menu.add_command(label=translations[language]["view_phones"], command=view_phones)
-    phone_menu.add_separator()
-    phone_menu.add_command(label=translations[language]["phone_stats"], command=show_phone_stats)
-    menu_items["phone_menu"] = phone_menu
+    # Sidebar for navigation (replaces the menubar)
+    sidebar_frame = ctk.CTkFrame(root_app, width=250, fg_color=colors["menu_bg"], corner_radius=0)
+    sidebar_frame.pack(side="left", fill="y")
 
-    # Ma'lumotlar menyusi
-    info_menu = tk.Menu(menubar, tearoff=0)
-    menubar.add_cascade(label=translations[language]["info_menu"], menu=info_menu)
-    info_menu.add_command(label=translations[language]["save_data"], command=save_data)
-    info_menu.add_command(label=translations[language]["load_data"], command=load_data)
-    info_menu.add_separator()
-    info_menu.add_command(label=translations[language]["about"], command=show_about)
-    menu_items["info_menu"] = info_menu
+    # Phone Menu Section
+    phone_label = ctk.CTkLabel(
+        sidebar_frame,
+        text=translations[language]["phone_menu"],
+        font=ctk.CTkFont(size=18, weight="bold"),
+        text_color=colors["fg"]
+    )
+    phone_label.pack(pady=(20, 10), anchor="w", padx=20)
 
-    # Sozlamalar menyusi
-    settings_menu = tk.Menu(menubar, tearoff=0)
-    menubar.add_cascade(label=translations[language]["settings"], menu=settings_menu)
-    settings_menu.add_command(label=translations[language]["change_language"], command=change_language)
-    settings_menu.add_command(label=translations[language]["toggle_dark_mode"], command=toggle_dark_mode)
-    settings_menu.add_separator()
-    settings_menu.add_command(label=translations[language]["login"], command=lock_application)
-    menu_items["settings_menu"] = settings_menu
+    btn_add_phone = ctk.CTkButton(
+        sidebar_frame,
+        text=translations[language]["add_phone"],
+        command=add_phone,
+        width=200,
+        fg_color=colors["button_bg"],
+        hover_color=colors["button_fg"],
+        corner_radius=10
+    )
+    btn_add_phone.pack(pady=5, padx=20)
+
+    btn_delete_phone = ctk.CTkButton(
+        sidebar_frame,
+        text=translations[language]["delete_phone"],
+        command=delete_phone,
+        width=200,
+        fg_color=colors["button_bg"],
+        hover_color=colors["button_fg"],
+        corner_radius=10
+    )
+    btn_delete_phone.pack(pady=5, padx=20)
+
+    btn_view_phones = ctk.CTkButton(
+        sidebar_frame,
+        text=translations[language]["view_phones"],
+        command=view_phones,
+        width=200,
+        fg_color=colors["button_bg"],
+        hover_color=colors["button_fg"],
+        corner_radius=10
+    )
+    btn_view_phones.pack(pady=5, padx=20)
+
+    btn_phone_stats = ctk.CTkButton(
+        sidebar_frame,
+        text=translations[language]["phone_stats"],
+        command=show_phone_stats,
+        width=200,
+        fg_color=colors["button_bg"],
+        hover_color=colors["button_fg"],
+        corner_radius=10
+    )
+    btn_phone_stats.pack(pady=5, padx=20)
+
+    # Info Menu Section
+    info_label = ctk.CTkLabel(
+        sidebar_frame,
+        text=translations[language]["info_menu"],
+        font=ctk.CTkFont(size=18, weight="bold"),
+        text_color=colors["fg"]
+    )
+    info_label.pack(pady=(20, 10), anchor="w", padx=20)
+
+    btn_save_data = ctk.CTkButton(
+        sidebar_frame,
+        text=translations[language]["save_data"],
+        command=save_data,
+        width=200,
+        fg_color=colors["button_bg"],
+        hover_color=colors["button_fg"],
+        corner_radius=10
+    )
+    btn_save_data.pack(pady=5, padx=20)
+
+    btn_load_data = ctk.CTkButton(
+        sidebar_frame,
+        text=translations[language]["load_data"],
+        command=load_data,
+        width=200,
+        fg_color=colors["button_bg"],
+        hover_color=colors["button_fg"],
+        corner_radius=10
+    )
+    btn_load_data.pack(pady=5, padx=20)
+
+    btn_about = ctk.CTkButton(
+        sidebar_frame,
+        text=translations[language]["about"],
+        command=show_about,
+        width=200,
+        fg_color=colors["button_bg"],
+        hover_color=colors["button_fg"],
+        corner_radius=10
+    )
+    btn_about.pack(pady=5, padx=20)
+
+    # Settings Menu Section
+    settings_label = ctk.CTkLabel(
+        sidebar_frame,
+        text=translations[language]["settings"],
+        font=ctk.CTkFont(size=18, weight="bold"),
+        text_color=colors["fg"]
+    )
+    settings_label.pack(pady=(20, 10), anchor="w", padx=20)
+
+    btn_change_language = ctk.CTkButton(
+        sidebar_frame,
+        text=translations[language]["change_language"],
+        command=change_language,
+        width=200,
+        fg_color=colors["button_bg"],
+        hover_color=colors["button_fg"],
+        corner_radius=10
+    )
+    btn_change_language.pack(pady=5, padx=20)
+
+    btn_toggle_dark_mode = ctk.CTkButton(
+        sidebar_frame,
+        text=translations[language]["dark_mode"],
+        command=toggle_dark_mode,
+        width=200,
+        fg_color=colors["button_bg"],
+        hover_color=colors["button_fg"],
+        corner_radius=10
+    )
+    btn_toggle_dark_mode.pack(pady=5, padx=20)
+    
+    btn_reset = ctk.CTkButton(
+        sidebar_frame,
+        text=translations[language]["reset"],
+        command=factory_reset,
+        width=200,
+        fg_color=colors["button_bg"],
+        hover_color=colors["button_fg"],
+        corner_radius=10
+    )
+    btn_reset.pack(pady=5, padx=20)
+
+    btn_login = ctk.CTkButton(
+        sidebar_frame,
+        text=translations[language]["login_title"],
+        command=lock_application,
+        width=200,
+        fg_color=colors["button_bg"],
+        hover_color=colors["button_fg"],
+        corner_radius=10
+    )
+    btn_login.pack(pady=5, padx=20)
+    
+
+    
+    
+    
+
+
+    # Save sidebar buttons in menu_items dictionary if needed later
+    menu_items["sidebar"] = {
+        "phone_menu": [btn_add_phone, btn_delete_phone, btn_view_phones, btn_phone_stats],
+        "info_menu": [btn_save_data, btn_load_data, btn_about],
+        "settings": [btn_change_language, btn_toggle_dark_mode, btn_reset, btn_login],
+        "reset": []  # bo‘sh tugma ro‘yxati
+    }
+    
+    # label til almashishlari
+    menu_items["section_labels"] = {
+        "phone_menu": phone_label,
+        "info_menu": info_label,
+        "settings": settings_label
+    }
+
+
+
+
 
 
 
@@ -3466,7 +3454,7 @@ def main_application():
         ("delete_phone", delete_phone),
         ("view_phones", view_phones),
         ("seel_phon", open_sales_file),
-        ("phone_istory", view_all_history)
+        ("note", open_eslatma_file)
 
 
     ]
@@ -3496,8 +3484,7 @@ def main_application():
         ("phone_stats", show_phone_stats),
         ("chop_et", view_print_screen),
         ("print", printer_file_ochish),
-        ("qdr", search_phone_by_imei)
-
+        ("qdr", open_search)
     ]
 
 
@@ -3519,17 +3506,100 @@ def main_application():
         )
         btn.pack(pady=25, padx=30, anchor="center")
         button_items[key] = btn  # Ro‘yxatga olish
+        
+    clock_label = tk.Label(
+        root_app,
+        font=("Consolas", 16, "bold"),
+        bg=colors["bg"],
+        fg="#dbdee0"
+    )
+    # clock_label.place(relx=0.0, rely=0.0, anchor="sw", x=20, y=880)
+    clock_label.place(relx=0.0, rely=1.0, anchor="sw", x=30, y=-80)
+
+
+    # clock_label.place(relx=1.0, rely=0.0, anchor="ne", x=-20, y=20)  # O'ng yuqori burchakda
+    import datetime
+    def update_clock():
+        now = datetime.datetime.now()
+        # Format: YYYY-MM-DD
+        date_str = now.strftime("%Y-%m-%d")
+        # Format: HH:MM:SS:MS
+        time_str = now.strftime("%H:%M:%S") + f":{int(now.microsecond/1000):03d}"
+        clock_label.config(text=f"{date_str}\n{time_str}")
+        root_app.after(50, update_clock)  # Har 50 ms da yangilansin
+
+    update_clock()
+    
+    # camera_frame = tk.Frame(root_app, width=250, height=180, bg="#222", highlightbackground="#3498db", highlightthickness=3)
+    # camera_frame.place(relx=0.01, rely=0.85, anchor="sw")  # Chap pastki burchakda
+
+    # # Kamera oynasi labeli
+    # camera_label = tk.Label(camera_frame, bg="#222")
+    # camera_label.pack(fill="both", expand=True)
+
+    # # Kamera stream funksiyasi
+    # def show_camera():
+    #     cap = cv2.VideoCapture(0)
+    #     def update():
+    #         ret, frame = cap.read()
+    #         if ret:
+    #             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    #             img = Image.fromarray(frame)
+    #             img = img.resize((210, 220))
+    #             imgtk = ImageTk.PhotoImage(image=img)
+    #             camera_label.imgtk = imgtk
+    #             camera_label.config(image=imgtk)
+    #         camera_label.after(30, update)
+    #     update()
+    # show_camera()
+
+# Kamera frame
+    camera_frame = tk.Frame(root_app, width=250, height=180, bg="#222", highlightbackground="#3498db", highlightthickness=3)
+    camera_frame.place(relx=0.01, rely=0.85, anchor="sw")
+
+    # Kamera label
+    camera_label = tk.Label(camera_frame, bg="#222")
+    camera_label.pack(fill="both", expand=True)
+
+    cap = cv2.VideoCapture(0)
+
+    def update():
+        if not camera_label.winfo_exists():
+            cap.release()
+            return  # Agar label yo‘q bo‘lsa, davom etmasin
+
+        ret, frame = cap.read()
+        if ret:
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            img = Image.fromarray(frame)
+            img = img.resize((210, 220))
+            imgtk = ImageTk.PhotoImage(image=img)
+            camera_label.imgtk = imgtk
+            camera_label.config(image=imgtk)
+
+        camera_label.after(30, update)
+
+    update()  # kamerani ishga tushirish
+
+    def on_closing():
+        cap.release()  # kamera resursini bo‘shat
+        root_app.destroy()
+
+    root_app.protocol("WM_DELETE_WINDOW", on_closing) 
+
+        
 
     # Dastlabki yuklashlar
     load_data()
     load_sold_phones()
 
     root_app.mainloop()
-    pass
+
 
 
 if __name__ == "__main__":       
     main_application()
+    
 
 
 

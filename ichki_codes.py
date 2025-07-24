@@ -149,7 +149,7 @@ class LoginWindow:
         # Username qismi
         username_label = ctk.CTkLabel(
             main_frame,
-            text="👤 Foydalanuvchi nomi:",
+            text="👤 Foydalanuvchi:",
             font=ctk.CTkFont(size=16, weight="bold"),
             text_color="#FFFFFF"
         )
@@ -159,7 +159,7 @@ class LoginWindow:
             main_frame,
             width=350,
             height=45,
-            placeholder_text="Foydalanuvchi nomini kiriting...",
+            placeholder_text="Usernameni kiriting...",
             font=ctk.CTkFont(size=14),
             corner_radius=15,
             border_width=2
@@ -222,7 +222,7 @@ class LoginWindow:
         info_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
         info_frame.pack(pady=(0, 20))
         
-        info_text = "💡 Standart ma'lumotlar:\n👤 Username: Sobir\n🔑 Kirish paroli: 0630\n🔐 Ichki parol: ichki123"
+        info_text = "💡 Standart ma'lumotlar:\n👤 Username: *** \n🔑 Kirish paroli: ***\n🔐 Ichki parol: hammasi hujjatda berilgan"
         info_label = ctk.CTkLabel(
             info_frame,
             text=info_text,
@@ -247,7 +247,7 @@ class LoginWindow:
             self.password_manager.verify_login_password(password_input)):
             
             self.login_window.destroy()
-            open.system("dukon.py")
+            open("dukon.py")
         else:
             messagebox.showerror("Xatolik", "Login yoki parol noto'g'ri! ❌")
             self.password_entry.delete(0, 'end')
@@ -478,7 +478,7 @@ class LoginWindow:
 
 
 
-    
+
     def run(self):
         """Dasturni ishga tushirish"""
         self.login_window.mainloop()
