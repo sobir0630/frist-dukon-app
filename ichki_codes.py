@@ -5,6 +5,7 @@ import json
 import os
 import sys
 import hashlib
+import subprocess
 
 # CustomTkinter sozlamalari
 ctk.set_appearance_mode("dark")
@@ -66,7 +67,7 @@ class PasswordManager:
     def create_default_codes(self):
         """Standart ichki kodlar yaratish"""
         codes = {
-                "IDEAL MOBILE": "ichki123"
+            "IDEAL MOBILE": "ichki123"
         }
         self.save_internal_codes(codes)
         return codes
@@ -118,7 +119,6 @@ class LoginWindow:
         
         # Enter tugmasi uchun
         self.login_window.bind('<Return>', lambda event: self.login_action())
-        
         
         self.create_login_interface()
     
@@ -222,7 +222,7 @@ class LoginWindow:
         info_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
         info_frame.pack(pady=(0, 20))
         
-        info_text = "💡 Standart ma'lumotlar:\n👤 Username: *** \n🔑 Kirish paroli: ***\n🔐 Ichki parol: hammasi hujjatda berilgan"
+        info_text = "💡 Standart ma'lumotlar:\n👤 Username: IDEAL MOBILE\n🔑 Kirish paroli: 9959\n🔐 Ichki parol: IDEAL_MOBILE+998995999959"
         info_label = ctk.CTkLabel(
             info_frame,
             text=info_text,
@@ -247,10 +247,212 @@ class LoginWindow:
             self.password_manager.verify_login_password(password_input)):
             
             self.login_window.destroy()
-            open("dukon.py")
+            self.open_main_app()
         else:
             messagebox.showerror("Xatolik", "Login yoki parol noto'g'ri! ❌")
             self.password_entry.delete(0, 'end')
+    
+    def open_main_app(self):
+        """Asosiy dasturni ochish"""
+        try:
+            # dukon.py faylini ochish
+            if os.path.exists("dukon.py"):
+                subprocess.run([sys.executable, "dukon.py"])
+            else:
+                # Agar dukon.py yo'q bo'lsa, asosiy oynani ochish
+                self.show_main_window()
+        except Exception as e:
+            messagebox.showerror("Xatolik", f"Dasturni ochishda xatolik: {str(e)}")
+            self.show_main_window()
+    
+    def show_main_window(self):
+        """Asosiy oynani ko'rsatish"""
+        app_window = ctk.CTk()
+        app_window.title("📱 IDEAL MOBILE - Asosiy Oyna")
+        app_window.geometry("600x500")
+        app_window.resizable(False, False)
+        
+        # Oynani markazlashtirish
+        app_window.update_idletasks()
+        width = 600
+        height = 500
+        x = (app_window.winfo_screenwidth() // 2) - (width // 2)
+        y = (app_window.winfo_screenheight() // 2) - (height // 2)
+        app_window.geometry(f"{width}x{height}+{x}+{y}")
+        
+        # Asosiy frame
+        main_frame = ctk.CTkFrame(app_window, corner_radius=20)
+        main_frame.pack(expand=True, fill="both", padx=30, pady=30)
+        
+        # Sarlavha
+        title_label = ctk.CTkLabel(
+            main_frame,
+            text="📱 IDEAL MOBILE",
+            font=ctk.CTkFont(size=32, weight="bold"),
+            text_color="#00D4FF"
+        )
+        title_label.pack(pady=(40, 30))
+        
+        # Xush kelibsiz matni
+        welcome_label = ctk.CTkLabel(
+            main_frame,
+            text="✅ Tizimga muvaffaqiyatli kirildi!",
+            font=ctk.CTkFont(size=18, weight="bold"),
+            text_color="#4CAF50"
+        )
+        welcome_label.pack(pady=(0, 30))
+        
+        # Kodlar frame
+        codes_frame = ctk.CTkFrame(main_frame, corner_radius=15)
+        codes_frame.pack(pady=(0, 20), padx=20, fill="x")
+        
+        codes_title = ctk.CTkLabel(
+            codes_frame,
+            text="🔍 Ichki Kodlar",
+            font=ctk.CTkFont(size=20, weight="bold")
+        )
+        codes_title.pack(pady=(20, 10))
+        
+        def show_internal_codes():
+            """Ichki kodlarni ko'rsatish"""
+            # Ichki parolni so'rash
+            internal_dialog = ctk.CTkToplevel(app_window)
+            internal_dialog.title("🔐 Ichki Parol")
+            internal_dialog.geometry("400x250")
+            internal_dialog.resizable(False, False)
+            internal_dialog.transient(app_window)
+            internal_dialog.grab_set()
+            
+            # Markazlashtirish
+            internal_dialog.update_idletasks()
+            x = (internal_dialog.winfo_screenwidth() // 2) - (200)
+            y = (internal_dialog.winfo_screenheight() // 2) - (125)
+            internal_dialog.geometry(f"400x250+{x}+{y}")
+            
+            dialog_frame = ctk.CTkFrame(internal_dialog, corner_radius=15)
+            dialog_frame.pack(expand=True, fill="both", padx=20, pady=20)
+            
+            title = ctk.CTkLabel(
+                dialog_frame,
+                text="🔐 ICHKI PAROL KIRITING",
+                font=ctk.CTkFont(size=16, weight="bold")
+            )
+            title.pack(pady=(30, 20))
+            
+            internal_entry = ctk.CTkEntry(
+                dialog_frame,
+                width=250,
+                height=40,
+                placeholder_text="Ichki parolni kiriting...",
+                show="*",
+                corner_radius=10
+            )
+            internal_entry.pack(pady=(0, 20))
+            
+            def verify_internal():
+                internal_pwd = internal_entry.get().strip()
+                if self.password_manager.verify_internal_password(internal_pwd):
+                    internal_dialog.destroy()
+                    self.show_codes_window(app_window)
+                else:
+                    messagebox.showerror("Xatolik", "Ichki parol noto'g'ri!")
+                    internal_entry.delete(0, 'end')
+            
+            verify_btn = ctk.CTkButton(
+                dialog_frame,
+                text="✅ Tasdiqlash",
+                command=verify_internal,
+                width=150,
+                height=35,
+                corner_radius=10
+            )
+            verify_btn.pack()
+            
+            internal_dialog.bind('<Return>', lambda event: verify_internal())
+            internal_entry.focus()
+        
+        codes_button = ctk.CTkButton(
+            codes_frame,
+            text="🔍 Kodlarni Ko'rish",
+            command=show_internal_codes,
+            width=200,
+            height=40,
+            font=ctk.CTkFont(size=14, weight="bold"),
+            corner_radius=15
+        )
+        codes_button.pack(pady=(0, 20))
+        
+        # Chiqish tugmasi
+        exit_button = ctk.CTkButton(
+            main_frame,
+            text="🚪 Chiqish",
+            command=app_window.destroy,
+            width=150,
+            height=40,
+            font=ctk.CTkFont(size=14, weight="bold"),
+            corner_radius=15,
+            fg_color="#d32f2f",
+            hover_color="#b71c1c"
+        )
+        exit_button.pack(pady=(30, 50))
+        
+        app_window.mainloop()
+    
+    def show_codes_window(self, parent):
+        """Kodlar oynasini ko'rsatish"""
+        codes_window = ctk.CTkToplevel(parent)
+        codes_window.title("🔍 Ichki Kodlar")
+        codes_window.geometry("500x400")
+        codes_window.resizable(False, False)
+        codes_window.transient(parent)
+        codes_window.grab_set()
+        
+        # Markazlashtirish
+        codes_window.update_idletasks()
+        x = (codes_window.winfo_screenwidth() // 2) - (250)
+        y = (codes_window.winfo_screenheight() // 2) - (200)
+        codes_window.geometry(f"500x400+{x}+{y}")
+        
+        main_frame = ctk.CTkFrame(codes_window, corner_radius=15)
+        main_frame.pack(expand=True, fill="both", padx=20, pady=20)
+        
+        # Sarlavha
+        title = ctk.CTkLabel(
+            main_frame,
+            text="🔍 ICHKI KODLAR",
+            font=ctk.CTkFont(size=20, weight="bold"),
+            text_color="#00D4FF"
+        )
+        title.pack(pady=(30, 20))
+        
+        # Kodlarni yuklash va ko'rsatish
+        codes = self.password_manager.load_internal_codes()
+        
+        codes_frame = ctk.CTkScrollableFrame(main_frame, height=200)
+        codes_frame.pack(pady=(0, 20), padx=20, fill="both", expand=True)
+        
+        for username, code in codes.items():
+            code_item = ctk.CTkFrame(codes_frame)
+            code_item.pack(fill="x", pady=5)
+            
+            ctk.CTkLabel(
+                code_item,
+                text=f"👤 {username}: {code}",
+                font=ctk.CTkFont(size=14),
+                anchor="w"
+            ).pack(pady=10, padx=20, fill="x")
+        
+        # Yopish tugmasi
+        close_button = ctk.CTkButton(
+            main_frame,
+            text="❌ Yopish",
+            command=codes_window.destroy,
+            width=120,
+            height=40,
+            corner_radius=10,
+            fg_color="#666666"
+        )
+        close_button.pack(pady=(0, 20))
     
     def show_change_password_dialog(self):
         """Parol o'zgartirish oynasini ko'rsatish"""
@@ -371,125 +573,17 @@ class LoginWindow:
         change_window.bind('<Return>', lambda event: change_password())
         current_entry.focus()
     
-        
-        def show_internal_codes():
-            """Ichki kodlarni ko'rsatish"""
-            # Ichki parolni so'rash
-            internal_dialog = ctk.CTkToplevel(app_window)
-            internal_dialog.title("🔐 Ichki Parol")
-            internal_dialog.geometry("400x250")
-            internal_dialog.resizable(False, False)
-            internal_dialog.transient(app_window)
-            internal_dialog.grab_set()
-            
-            # Markazlashtirish
-            internal_dialog.update_idletasks()
-            x = (internal_dialog.winfo_screenwidth() // 2) - (200)
-            y = (internal_dialog.winfo_screenheight() // 2) - (125)
-            internal_dialog.geometry(f"400x250+{x}+{y}")
-            
-            dialog_frame = ctk.CTkFrame(internal_dialog, corner_radius=15)
-            dialog_frame.pack(expand=True, fill="both", padx=20, pady=20)
-            
-            title = ctk.CTkLabel(
-                dialog_frame,
-                text="🔐 ICHKI PAROL KIRITING",
-                font=ctk.CTkFont(size=16, weight="bold")
-            )
-            title.pack(pady=(30, 20))
-            
-            internal_entry = ctk.CTkEntry(
-                dialog_frame,
-                width=250,
-                height=40,
-                placeholder_text="Ichki parolni kiriting...",
-                show="*",
-                corner_radius=10
-            )
-            internal_entry.pack(pady=(0, 20))
-            
-            def verify_internal():
-                internal_pwd = internal_entry.get().strip()
-                if self.password_manager.verify_internal_password(internal_pwd):
-                    internal_dialog.destroy()
-                    self.show_codes_window(app_window)
-                else:
-                    messagebox.showerror("Xatolik", "Ichki parol noto'g'ri!")
-                    internal_entry.delete(0, 'end')
-            
-            verify_btn = ctk.CTkButton(
-                dialog_frame,
-                text="✅ Tasdiqlash",
-                command=verify_internal,
-                width=150,
-                height=35,
-                corner_radius=10
-            )
-            verify_btn.pack()
-            
-            internal_dialog.bind('<Return>', lambda event: verify_internal())
-            internal_entry.focus()
-        
-        codes_button = ctk.CTkButton(
-            codes_frame,
-            text="🔍 Kodlarni Ko'rish",
-            command=show_internal_codes,
-            width=200,
-            height=40,
-            font=ctk.CTkFont(size=14, weight="bold"),
-            corner_radius=15
-        )
-        codes_button.pack(pady=(0, 20))
-        
-        # Chiqish tugmasi
-        exit_button = ctk.CTkButton(
-            main_frame,
-            text="🚪 Chiqish",
-            command=app_window.destroy,
-            width=150,
-            height=40,
-            font=ctk.CTkFont(size=14, weight="bold"),
-            corner_radius=15,
-            fg_color="#d32f2f",
-            hover_color="#b71c1c"
-        )
-        exit_button.pack(pady=(30, 50))
-        
-        app_window.mainloop()
-    
-         
-        # Yopish tugmasi
-        close_button = ctk.CTkButton(
-            main_frame,
-            text="❌ Yopish",
-            command=codes_window.destroy,
-            width=120,
-            height=40,
-            corner_radius=10,
-            fg_color="#666666"
-        )
-        close_button.pack(pady=(0, 20))
-    
     def on_closing(self):
         """Oynani yopish"""
         if messagebox.askokcancel("Chiqish", "Dasturdan chiqishni xohlaysizmi? 🤔"):
             self.login_window.destroy()
             sys.exit()
 
-
-
-
     def run(self):
         """Dasturni ishga tushirish"""
         self.login_window.mainloop()
 
-
-
-
-app = LoginWindow()
-app.run()
-
-
-
-
-
+# Dasturni ishga tushirish
+if __name__ == "__main__":
+    app = LoginWindow()
+    app.run()
