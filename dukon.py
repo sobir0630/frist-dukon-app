@@ -185,10 +185,17 @@ translations = {
         "settings_menu": "Sozlamalar",
         "yangilar": "yangilar",
         "note": "Eslatmalar",
-        "sell_0": "Sotish narxi 0 dan katta bo'lishi kerak!"
+        "sell_0": "Sotish narxi 0 dan katta bo'lishi kerak!",
+        "asil_narx": "Asil narxi",
+        "sotish_narx": "Sotish narxi",
+        "foydasi": "Foyda"
+        
 
     },
     "ru": {
+        "foydasi": "ochen",
+        "sotish_narx": "sell",
+        "asil_narx": "real dengi",
         "reset": "Полная очистка программы",
         "note": "Примечания",
         "yangilar": "Новички",
@@ -663,7 +670,7 @@ def show_login_screen():
         correct_username = "IDEAL MOBILE"
         correct_password = "9959"
 
-        if username == CORRECT_USERNAME and password == CORRECT_PASSWORD:
+        if username == CORRECT_USERNAME and password == CORRECT_PASSWORD:  # noqa: F821
             login_window.destroy()
             messagebox.showinfo(translations[language]["Muvaffaqiyat"], f"Xush kelibsiz, {correct_username}!")
         else:
@@ -2062,7 +2069,7 @@ def show_sales_summary():
         if days is None:
             filtered_phones = sold_phones
         else:
-            cutoff_date = datetime.now() - timedelta(days=days-1)
+            cutoff_date = datetime.now() - time(days=days-1)
             for phone in sold_phones:
                 sale_date = datetime.strptime(phone["sana"], "%d/%m/%Y")
                 if sale_date.date() >= cutoff_date.date():
@@ -2675,24 +2682,28 @@ def view_all_history():
             "foyda", "mijoz_ismi", "mijoz_telefon", "holat", "sana"
         )
         tree = ttk.Treeview(table_frame, columns=columns, show="headings", selectmode="browse")
-
-        # Ustun sozlamalari
-        column_settings = {
-            "id": ("ID", 50),
-            "nomi": ("Telefon nomi", 150),
-            "modeli": ("IMEI", 150),
-            "asl_narx": ("Asl narx", 90),
-            "sotish_narx": ("Sotish narxi", 90),
-            "foyda": ("Foyda", 80),
-            "mijoz_ismi": ("Mijoz ismi", 120),
-            "mijoz_telefon": ("Mijoz telefoni", 120),
-            "holat": ("Holati", 90),
-            "sana": ("Sana", 100)
-        }
-
-        for col, (heading, width) in column_settings.items():
-            tree.heading(col, text=heading)
-            tree.column(col, anchor="center", width=width)
+        tree.heading("id", text="ID")
+        tree.heading("nomi", text=translations[language]["phone_name_label"])
+        tree.heading("modeli", text=translations[language]["model_label"])
+        tree.heading("asl_narx", text=translations[language]["asil_narx"])
+        tree.heading("sotish_narx", text=translations[language]["sotish_narx"])
+        tree.heading("foyda", text=translations[language]["foydasi"])
+        tree.heading("mijoz_ismi", text=translations[language]["mj"])
+        tree.heading("mijoz_telefon", text=translations[language]["mj_tel"])
+        tree.heading("holat", text=translations[language]["holat"])
+        tree.heading("sana", text=translations[language]["san"])
+        
+        tree.column("id", anchor="center", width=50)
+        tree.column("nomi", anchor="center", width=150)
+        tree.column("modeli", anchor="center", width=150)
+        tree.column("asl_narx", anchor="center", width=150)
+        tree.column("sotish_narx", anchor="center", width=150)
+        tree.column("foyda", anchor="center", width=150)
+        tree.column("mijoz_ismi", anchor="center", width=150)
+        tree.column("mijoz_telefon", anchor="center", width=150)
+        tree.column("holat", anchor="center", width=150)
+        tree.column("sana", anchor="center", width=150)
+        
 
         # Skroll
         scrollbar = ttk.Scrollbar(table_frame, orient="vertical", command=tree.yview)
