@@ -222,7 +222,7 @@ class LoginWindow:
         info_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
         info_frame.pack(pady=(0, 20))
         
-        info_text = "💡 Standart ma'lumotlar:\n👤 Username: IDEAL MOBILE\n🔑 Kirish paroli: 9959\n🔐 Ichki parol: IDEAL_MOBILE+998995999959"
+        info_text = "💡 Standart ma'lumotlar:\n👤 Username: ****\n🔑 Kirish paroli: ****\n🔐 Ichki parol: ****"
         info_label = ctk.CTkLabel(
             info_frame,
             text=info_text,
